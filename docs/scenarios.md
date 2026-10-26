@@ -12,7 +12,10 @@ Missing/invalid credentials return 401. DELETE returns 204, subsequent GET is 40
 Each API test creates unique users and removes them in cleanup where the runner
 supports finally/fixture teardown. Local CI starts a fresh real service.
 
-ParaBank is an external shared service. An outage is a failing dependency, not a skip
-or a successful test. Automatic test retries are disabled. Use fresh data on reruns.
+CI starts the official ParaBank Docker image in an isolated loopback container,
+configures JDBC there, and records the resolved image digest in reports.
+Local runs default to the shared public instance; PARABANK_URL overrides it.
+An application outage is a failing dependency, never a skip or successful test.
+Automatic test retries are disabled. Use fresh data on reruns.
 Suite source is the authoritative scenario inventory; feature parity differs for
 experimental TestScript and is documented in its README.

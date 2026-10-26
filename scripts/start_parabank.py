@@ -24,8 +24,14 @@ def main():
     opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
     deadline = time.monotonic() + 90
     last_error = 'admin form not found'
+    initialized = False
     while True:
         try:
+            if not initialized:
+                request = urllib.request.Request(BASE + '/services/bank/initializeDB', data=b'', method='POST')
+                with opener.open(request, timeout=10) as response:
+                    response.read()
+                initialized = True
             with opener.open(BASE + '/admin.htm', timeout=5) as response:
                 html = response.read().decode()
             if 'accessMode' in html:

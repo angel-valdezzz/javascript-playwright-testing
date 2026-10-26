@@ -36,6 +36,9 @@ jobs:
       - name: Stop isolated ParaBank
         if: always()
         run: docker rm --force parabank-under-test || true
+      - name: Export public dependency lock
+        if: always()
+        run: python scripts/export_lock.py
       - name: Preserve native reports
         if: always()
         uses: actions/upload-artifact@v4
