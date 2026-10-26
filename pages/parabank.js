@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 export class ParaBank {
-  constructor(page) { this.page = page; this.username = 'qa' + randomUUID().replaceAll('-', ''); this.password = 'DemoPass42!'; }
+  constructor(page) { this.page = page; this.username = 'qa' + randomUUID().replaceAll('-', '').slice(0,18); this.password = 'DemoPass42!'; }
   async home() { await this.page.goto((process.env.PARABANK_URL || 'https://parabank.parasoft.com/parabank') + '/index.htm'); }
   async form(mismatch = false) {
     await this.home(); await this.page.getByRole('link', { name: 'Register', exact: true }).click();
