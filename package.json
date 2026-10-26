@@ -1,0 +1,19 @@
+{
+  "name": "javascript-playwright-testing",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --project=ui",
+    "test:api": "playwright test --project=api",
+    "report": "playwright show-report"
+  },
+  "dependencies": {
+    "@playwright/test": "1.56.1"
+  },
+  "devDependencies": {}
+}
