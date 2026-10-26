@@ -4,7 +4,7 @@ test('customer registration', async ({ page }) => { await new ParaBank(page).reg
 test('logout and login retain access', async ({ page }) => {
   const bank = new ParaBank(page); await bank.register();
   await page.getByRole('link', { name: 'Log Out', exact: true }).click(); await bank.login();
-  await expect(page.locator('#rightPanel h1')).toHaveText('Accounts Overview');
+  await expect(page.locator('#rightPanel h1:visible')).toHaveText('Accounts Overview');
   await expect(page.locator('#accountTable tbody tr a').first()).toHaveText(/^\d+$/);
 });
 test('required registration fields', async ({ page }) => {
