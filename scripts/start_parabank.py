@@ -8,7 +8,7 @@ import time
 import urllib.parse
 import urllib.request
 
-IMAGE = 'parasoft/parabank:baseline'
+IMAGE = 'parasoft/parabank@sha256:4a122c72f653edb979b1b84d98c5c7e938b43f22f9e46d8e041de759390982a4'
 BASE = 'http://127.0.0.1:8080/parabank'
 
 
@@ -22,17 +22,20 @@ def main():
     subprocess.run(['docker', 'run', '--detach', '--name', 'parabank-under-test',
                     '--publish', '127.0.0.1:8080:8080', IMAGE], check=True)
     opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
-    deadline = time.monotonic() + 180
+    deadline = time.monotonic() + 90
+    last_error = 'admin form not found'
     while True:
         try:
             with opener.open(BASE + '/admin.htm', timeout=5) as response:
                 html = response.read().decode()
             if 'accessMode' in html:
                 break
-        except (OSError, TimeoutError):
-            pass
+        except (OSError, TimeoutError) as error:
+            last_error = str(error)
         if time.monotonic() >= deadline:
-            raise RuntimeError('Official ParaBank did not become ready within 180 seconds')
+            subprocess.run(['docker', 'logs', '--tail', '100', 'parabank-under-test'], check=False)
+            subprocess.run(['docker', 'inspect', '--format', '{{json .State}}', 'parabank-under-test'], check=False)
+            raise RuntimeError('Official ParaBank did not become ready: ' + last_error)
         time.sleep(2)
     # GET above loads the official form into this session; bind only these fields.
     # This address is fixed to loopback and cannot target the public demo instance.
